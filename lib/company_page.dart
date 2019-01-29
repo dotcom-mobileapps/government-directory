@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:government_directory/add_advert.dart';
 import 'package:government_directory/favourites.dart';
 import 'package:government_directory/search_page.dart';
+import 'package:government_directory/view_advert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/company.dart';
 import 'package:http/http.dart' as http;
@@ -31,6 +32,8 @@ class _company_page_state extends State<company_page>
   Animation<double> width;
   Animation<double> height;
   DecorationImage type;
+
+  bool _has_advert = false;
 
   double _appBarHeight = 256.0;
   AppBarBehavior _appBarBehavior = AppBarBehavior.pinned;
@@ -137,6 +140,12 @@ class _company_page_state extends State<company_page>
       _preferences = sp;
       setState(() {
         user_id = _preferences.getString('id');
+
+        if(company.advert_link == null || company.advert_link == ""){
+
+        }else{
+          _has_advert = true;
+        }
       });
 
       _is_my_favourite();
@@ -668,16 +677,16 @@ class _company_page_state extends State<company_page>
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButtonLocation:  FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: _has_advert ? FloatingActionButton.extended(
         elevation: 4.0,
         backgroundColor: Colors.green,
         icon: const Icon(Icons.view_carousel),
         label: const Text('view ad'),
         onPressed: () {
-          print('hey');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => view_advert_page(company.advert_link,company.name)));
         },
-      ),
+      ) : null,
       bottomNavigationBar: BottomAppBar(
         child: new Row(
           mainAxisSize: MainAxisSize.max,
